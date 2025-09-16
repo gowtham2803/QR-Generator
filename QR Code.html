@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QR Code Generator</title>
+
+  <!-- ✅ Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="QR Code Style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-8 col-lg-5">
+        <div class="wrapper">
+          <header class="mb-4">
+            <h1 class="fw-bold">✨ QR Code Generator</h1>
+            <p class="text-light">Create, preview, and download QR codes instantly</p>
+          </header>
+
+          <main>
+            <input type="text" class="form-control mb-3" id="qrInput" placeholder="Enter URL or Text here" />
+            <button class="btn btn-info w-100 mb-3 text-white" onclick="generateQR()">Generate QR Code</button>
+
+            <div id="qrBox" class="text-center">
+              <div id="qrOutput" class="d-flex justify-content-center"></div>
+              <button id="downloadBtn" class="btn btn-success mt-3" style="display:none;">Download QR</button>
+            </div>
+          </main>
+
+          <footer class="mt-4">
+            <p class="text-light small mb-0">Made 😎 by Gowtham Stark</p>
+          </footer>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    let qr;
+
+    function generateQR() {
+      const input = document.getElementById("qrInput").value.trim();
+      const qrOutput = document.getElementById("qrOutput");
+      const downloadBtn = document.getElementById("downloadBtn");
+
+      qrOutput.innerHTML = "";
+      downloadBtn.style.display = "none";
+
+      if (!input) {
+        alert("Please enter some text or a URL!");
+        return;
+      }
+      const checkurl = /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w\-._~:\/?#[\]@!$&'()*+,;=]*)?$/.test(input);
+      const checktext = input.split(/\s+/).length >= 3;
+
+      if (!checkurl && !checktext) {
+        alert("Please enter a valid URL or meaningful text (at least 3 words)!");
+        return;
+      }
+
+      qr = new QRCode(qrOutput, {
+        text: input,
+        width: 200,
+        height: 200,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+      });
+
+      setTimeout(() => {
+        const img = qrOutput.querySelector("img");
+        if (img) {
+          downloadBtn.style.display = "inline-block";
+          downloadBtn.onclick = () => {
+            const link = document.createElement('a');
+            link.href = img.src;
+            link.download = "qrcode.png";
+            link.click();
+          };
+        }
+      },300);
+    }
+  </script>
+</body>
+</html>
